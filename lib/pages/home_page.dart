@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agenda/helpers/contact_helper.dart';
+import 'package:agenda/pages/contact_page.dart';
 import 'package:flutter/material.dart';
 
 class Agenda extends StatefulWidget {
@@ -15,11 +16,14 @@ class _AgendaState extends State<Agenda> {
   @override
   void initState() {
     super.initState();
-    helper.getAllContacts().then((list) {
-      setState(() {
-        contatos = list;
-      });
-    });
+
+    /*Contact c = Contact();
+    c.name = 'Ronin';
+    c.email = 'roninsoaresflu129@gmail.com';
+    c.phone = '996942833';
+    helper.saveContact(c);
+    */
+    _getAllContacts();
   }
 
   @override
@@ -32,7 +36,7 @@ class _AgendaState extends State<Agenda> {
         ),
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: _showContactPage,
           child: Icon(Icons.add),
           backgroundColor: Colors.orange,
         ),
@@ -47,6 +51,9 @@ class _AgendaState extends State<Agenda> {
 
   Widget _contactCard(BuildContext context, int index) {
     return GestureDetector(
+      onTap: () {
+        _showContactPage(contact: contatos[index]);
+      },
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(10.0),
@@ -88,5 +95,26 @@ class _AgendaState extends State<Agenda> {
         ),
       ),
     );
+  }
+
+  void _showContactPage({Contact contact}) async {
+    final recContact =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      ContatoPage(contact: contact);
+    }));
+    if (recContact != null) {
+      await helper.updateContact(recContact);
+    } else {
+      await helper.saveContact(recContact);
+    }
+    _getAllContacts();
+  }
+
+  void _getAllContacts() {
+    helper.getAllContacts().then((list) {
+      setState(() {
+        contatos = list;
+      });
+    });
   }
 }
