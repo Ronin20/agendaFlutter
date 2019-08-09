@@ -98,16 +98,20 @@ class _AgendaState extends State<Agenda> {
   }
 
   void _showContactPage({Contact contact}) async {
-    final recContact =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      ContatoPage(contact: contact);
-    }));
+    final recContact = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ContatoPage(
+                  contact: contact,
+                )));
     if (recContact != null) {
-      await helper.updateContact(recContact);
-    } else {
-      await helper.saveContact(recContact);
+      if (contact != null) {
+        await helper.updateContact(recContact);
+      } else {
+        await helper.saveContact(recContact);
+      }
+      _getAllContacts();
     }
-    _getAllContacts();
   }
 
   void _getAllContacts() {

@@ -16,6 +16,8 @@ class _ContatoPageState extends State<ContatoPage> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
 
+  final _nameFocus = FocusNode();
+
   bool _userEdited = false;
 
   Contact _editedContact;
@@ -44,7 +46,13 @@ class _ContatoPageState extends State<ContatoPage> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.orange,
           child: Icon(Icons.save),
-          onPressed: () {},
+          onPressed: () {
+            if (_editedContact.name != null && _editedContact.name.isNotEmpty) {
+              Navigator.pop(context, _editedContact);
+            } else {
+              FocusScope.of(context).requestFocus(_nameFocus);
+            }
+          },
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -68,6 +76,7 @@ class _ContatoPageState extends State<ContatoPage> {
                 padding: EdgeInsets.all(10.0),
                 child: TextField(
                   controller: _nameController,
+                  focusNode: _nameFocus,
                   decoration: InputDecoration(
                       labelText: 'Nome',
                       labelStyle:
